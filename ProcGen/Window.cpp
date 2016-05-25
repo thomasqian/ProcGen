@@ -2,7 +2,9 @@
 
 const char* window_title = "Procedural Generation";
 
-GLint shaderProgram;
+GLuint shaderProgram;
+GLuint skyboxShader;
+Skybox* skybox;
 
 // Default camera parameters
 glm::vec3 camPos(0.0f, 0.0f, 20.0f);		
@@ -16,11 +18,17 @@ glm::mat4 Window::P;
 glm::mat4 Window::V;
 
 void Window::initialize() {
+	skybox = new Skybox();
+
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
+	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
 }
 
 void Window::cleanUp() {
+	delete(skybox);
+
 	glDeleteProgram(shaderProgram);
+	glDeleteProgram(skyboxShader);
 }
 
 GLFWwindow* Window::createWindow(int width, int height) {
@@ -79,7 +87,10 @@ void Window::displayCallback(GLFWwindow* window) {
 	glUseProgram(shaderProgram);
 
 	// draw here
-
+	 
+	// draw skybox last
+	glUseProgram(skyboxShader);
+	skybox->draw(shaderProgram, skyboxShader, V, P);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
