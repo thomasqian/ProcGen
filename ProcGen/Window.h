@@ -22,4 +22,11 @@ public:
 	static void idleCallback();
 	static void displayCallback(GLFWwindow*);
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
+	static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
+private:
+	static double prevMouseX, prevMouseY, mouseX, mouseY;
+	static bool mouseLeftDown;
+	static glm::vec3 lastPoint, curPoint;
 };
