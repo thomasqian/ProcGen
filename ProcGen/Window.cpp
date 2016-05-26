@@ -2,7 +2,8 @@
 
 const char* window_title = "Procedural Generation";
 
-static float ROTSCALE = 2.0f;
+static const float ROTSCALE = 0.003f;
+static const float MOVESPEED = 0.02f;
 
 GLuint shaderProgram;
 GLuint skyboxShader;
@@ -16,8 +17,6 @@ glm::vec3 camUp(0.0f, 1.0f, 0.0f);
 int Window::width;
 int Window::height;
  
-glm::vec3 Window::lastPoint;
-glm::vec3 Window::curPoint;
 double Window::mouseX;
 double Window::mouseY;
 double Window::prevMouseX;
@@ -29,6 +28,9 @@ bool wDown, aDown, sDown, dDown, qDown, eDown;
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 glm::mat4 I(1.0f);
+glm::vec3 UP(0, 1, 0);
+glm::mat4 rotateY90(glm::rotate(I, glm::pi<float>() / 2.0f, UP));
+
 
 void Window::initialize() {
 	skybox = new Skybox();
@@ -88,36 +90,34 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 
 	if (height > 0) {
 		P = glm::perspective(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
-		V = glm::lookAt(camPos, camLook, camUp);
+		V = glm::lookAt(camPos, camPos + camLook, camUp);
 	}
 }
 
 void Window::idleCallback() {
 	if (wDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		camPos += direction/50.0f;
+		camPos += direction * MOVESPEED;
 	}
 	if (aDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		glm::mat4 rotateY(glm::rotate(I, glm::pi<float>() / 2.0f, glm::vec3(0, 1, 0)));
-		direction = glm::vec3(rotateY * glm::vec4(direction, 0.0f));
-		camPos += direction/50.0f;
+		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+		camPos += direction * MOVESPEED;
 	}
 	if (sDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		camPos -= direction/50.0f;
+		camPos -= direction * MOVESPEED;
 	}
 	if (dDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		glm::mat4 rotateY(glm::rotate(I, -glm::pi<float>() / 2.0f, glm::vec3(0, 1, 0)));
-		direction = glm::vec3(rotateY * glm::vec4(direction, 0.0f));
-		camPos += direction/50.0f;
+		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+		camPos -= direction * MOVESPEED;
 	}
 	if (qDown) {
-		camPos.y += 0.02f;
+		camPos.y += MOVESPEED;
 	}
 	if (eDown) {
-		camPos.y -= 0.02f;
+		camPos.y -= MOVESPEED;
 	}
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
 }
@@ -156,7 +156,6 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-	glfwGetCursorPos(window, &mouseX, &mouseY);
 	if (button == GLFW_MOUSE_BUTTON_LEFT) { // rotation
 		if (action == GLFW_PRESS) {
 			mouseLeftDown = true;
@@ -174,10 +173,10 @@ void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 		float dx = mouseX - prevMouseX;
 		float dy = mouseY - prevMouseY;
 
-		glm::mat4 rotateLR = glm::rotate(I, -dx * 0.003f, glm::vec3(0, 1, 0));
-		glm::vec3 temp = glm::cross(glm::vec3(0, 1, 0), camLook);
+		glm::mat4 rotateLR = glm::rotate(I, -dx * ROTSCALE, UP);
+		glm::vec3 xaxis = glm::cross(UP, camLook);
 
-		glm::mat4 rotateUD = glm::rotate(I, dy * 0.003f, temp);
+		glm::mat4 rotateUD = glm::rotate(I, dy * ROTSCALE, xaxis);
 
 		camLook = glm::vec3(rotateUD * rotateLR * glm::vec4(camLook, 0.0f));
 	}

@@ -28,5 +28,4 @@ public:
 private:
 	static double prevMouseX, prevMouseY, mouseX, mouseY;
 	static bool mouseLeftDown;
-	static glm::vec3 lastPoint, curPoint;
 };
