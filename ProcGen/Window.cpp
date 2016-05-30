@@ -31,16 +31,20 @@ glm::mat4 I(1.0f);
 glm::vec3 UP(0, 1, 0);
 glm::mat4 rotateY90(glm::rotate(I, glm::pi<float>() / 2.0f, UP));
 
+Terrain* t;
 
 void Window::initialize() {
 	skybox = new Skybox();
+	t = new Terrain();
 
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
+	fprintf(stderr, "back in window\n");
 }
 
 void Window::cleanUp() {
 	delete(skybox);
+	delete(t);
 
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(skyboxShader);
@@ -124,11 +128,12 @@ void Window::idleCallback() {
 
 void Window::displayCallback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	 
 	glUseProgram(shaderProgram);
 
 	// draw here
-	 
+	t->draw(shaderProgram);
+
 	// draw skybox last
 	glUseProgram(skyboxShader);
 	skybox->draw(shaderProgram, skyboxShader, V, P);
