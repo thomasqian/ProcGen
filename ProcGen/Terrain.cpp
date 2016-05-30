@@ -13,17 +13,15 @@ Terrain::Terrain() {
 		}
 	}
 
-	offset = 10;
-
-	hm[0][0] = rng() % 10;
-	hm[0][EL] = rng() % 10;
-	hm[EL][0] = rng() % 10;
-	hm[EL][EL] = rng() % 10;
+	hm[0][0] = rng() % offsetValue;
+	hm[0][EL - 1] = rng() % offsetValue;
+	hm[EL - 1][0] = rng() % offsetValue;
+	hm[EL - 1][EL - 1] = rng() % offsetValue;
 
 	set[0][0] = true;
-	set[0][EL] = true;
-	set[EL][0] = true;
-	set[EL][EL] = true;
+	set[0][EL - 1] = true;
+	set[EL - 1][0] = true;
+	set[EL - 1][EL - 1] = true;
 
 	generate();
 	
@@ -106,10 +104,11 @@ Terrain::~Terrain() {
 
 void Terrain::generate() {
 	int distance = EL / 2;
-	offset = 10;
+	offset = offsetValue;
+
 	while (true) {
-		for (int x = 0; x < EL; x++) {
-			for (int z = 0; z < EL; z++) {
+		for (int x = 0; x < EL; x += distance) {
+			for (int z = 0; z < EL; z += distance) {
 				if (!set[x][z]) {
 					if (inBounds(x - distance, z - distance) && set[x - distance][z - distance]) {
 						generateDiamond(x, z, distance);
@@ -117,8 +116,8 @@ void Terrain::generate() {
 				}
 			}
 		}
-		for (int x = 0; x < EL; x++) {
-			for (int z = 0; z < EL; z++) {
+		for (int x = 0; x < EL; x += distance) {
+			for (int z = 0; z < EL; z += distance) {
 				if (!set[x][z]) {
 					if (inBounds(x - distance, z) && set[x - distance][z]
 						|| inBounds(x, z - distance) && set[x][z - distance]) {
@@ -159,7 +158,7 @@ void Terrain::generateDiamond(int x, int z, int d) {
 	int xx = x - d;
 	int zz = z - d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -168,7 +167,7 @@ void Terrain::generateDiamond(int x, int z, int d) {
 	xx = x + d;
 	zz = z - d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -177,7 +176,7 @@ void Terrain::generateDiamond(int x, int z, int d) {
 	xx = x - d;
 	zz = z + d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -186,7 +185,7 @@ void Terrain::generateDiamond(int x, int z, int d) {
 	xx = x + d;
 	zz = z + d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -204,7 +203,7 @@ void Terrain::generateSquare(int x, int z, int d) {
 	int xx = x - d;
 	int zz = z;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -213,7 +212,7 @@ void Terrain::generateSquare(int x, int z, int d) {
 	xx = x + d;
 	zz = z;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -222,7 +221,7 @@ void Terrain::generateSquare(int x, int z, int d) {
 	xx = x;
 	zz = z - d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];
@@ -231,7 +230,7 @@ void Terrain::generateSquare(int x, int z, int d) {
 	xx = x;
 	zz = z + d;
 	if (inBounds(xx, zz)) {
-		if (!set[xx, zz]) {
+		if (!set[xx][zz]) {
 			fprintf(stderr, "shit at (%d, %d)\n", xx, zz);
 		}
 		sum = sum + hm[xx][zz];

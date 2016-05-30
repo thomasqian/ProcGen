@@ -10,10 +10,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // 2^n + 1
-#define EL 257
+#define EL 65
 
-const static unsigned int seed = 500;
-const static float scale = 50.0f;
+const static unsigned int seed = 5;
+const static float scale = 10.0f;
+const static int offsetValue = 15;
 
 class Terrain {
 private:

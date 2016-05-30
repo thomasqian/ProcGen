@@ -3,7 +3,8 @@
 const char* window_title = "Procedural Generation";
 
 static const float ROTSCALE = 0.003f;
-static const float MOVESPEED = 0.02f;
+static const float MOVESPEED = 0.5f;
+static const float SCROLLSPEED = 5.0f;
 
 GLuint shaderProgram;
 GLuint skyboxShader;
@@ -157,6 +158,9 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		qDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_E) {
 		eDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
+	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+		delete(t);
+		t = new Terrain();
 	}
 }
 
@@ -192,5 +196,5 @@ void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void Window::scrollCallback(GLFWwindow* window, double sx, double sy) {
-	camPos = camPos + camLook*(float)sy;
+	camPos = camPos + camLook * (float)sy * SCROLLSPEED;
 }
