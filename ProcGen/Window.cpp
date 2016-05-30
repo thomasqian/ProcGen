@@ -3,8 +3,7 @@
 const char* window_title = "Procedural Generation";
 
 static const float ROTSCALE = 0.003f;
-static const float MOVESPEED = 0.5f;
-static const float SCROLLSPEED = 5.0f;
+static const float MOVESPEED = 0.7f;
 
 GLuint shaderProgram;
 GLuint skyboxShader;
@@ -119,25 +118,24 @@ void Window::idleCallback() {
 		camPos -= direction * MOVESPEED;
 	}
 	if (qDown) {
-		camPos.y += MOVESPEED;
+		camPos.y -= MOVESPEED;
 	}
 	if (eDown) {
-		camPos.y -= MOVESPEED;
+		camPos.y += MOVESPEED;
 	}
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
 }
 
 void Window::displayCallback(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	 
-	glUseProgram(shaderProgram);
 
-	// draw here
-	t->draw(shaderProgram);
-
-	// draw skybox last
+	glCullFace(GL_BACK);
 	glUseProgram(skyboxShader);
 	skybox->draw(shaderProgram, skyboxShader, V, P);
+
+	glCullFace(GL_BACK);
+	glUseProgram(shaderProgram);
+	t->draw(shaderProgram);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -158,9 +156,6 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		qDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_E) {
 		eDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
-	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-		delete(t);
-		t = new Terrain();
 	}
 }
 
@@ -171,6 +166,9 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 		} else if (action == GLFW_RELEASE) {
 			mouseLeftDown = false;
 		}
+	}
+	else if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS){
+		t->toggle();
 	}
 }
 
@@ -196,5 +194,5 @@ void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void Window::scrollCallback(GLFWwindow* window, double sx, double sy) {
-	camPos = camPos + camLook * (float)sy * SCROLLSPEED;
+	camPos = camPos + camLook*(float)sy*10.0f;
 }
