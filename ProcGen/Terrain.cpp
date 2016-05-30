@@ -77,7 +77,7 @@ Terrain::Terrain() {
 		indices.push_back(i);
 	}
 
-	for (int i = 0; i < 9; ++i) std::cout << vertices[i] << " ";
+	//for (int i = 0; i < 9; ++i) std::cout << vertices[i] << " ";
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
