@@ -52,30 +52,32 @@ Terrain::Terrain() {
 
 			vertices.push_back((float)x * scale);
 			vertices.push_back(hm[x][z + 1]);
-			vertices.push_back((float)z * scale);
+			vertices.push_back((float)(z + 1) * scale);
 
-			vertices.push_back((float)x * scale);
+			vertices.push_back((float)(x + 1) * scale);
 			vertices.push_back(hm[x + 1][z]);
 			vertices.push_back((float)z * scale);
 
 			// bottom right triangle
-			vertices.push_back((float)x * scale);
+			vertices.push_back((float)(x + 1) * scale);
 			vertices.push_back(hm[x + 1][z + 1]);
-			vertices.push_back((float)z * scale);
+			vertices.push_back((float)(z + 1) * scale);
 
-			vertices.push_back((float)x * scale);
+			vertices.push_back((float)(x + 1) * scale);
 			vertices.push_back(hm[x + 1][z]);
 			vertices.push_back((float)z * scale);
 
 			vertices.push_back((float)x * scale);
 			vertices.push_back(hm[x][z + 1]);
-			vertices.push_back((float)z * scale);
+			vertices.push_back((float)(z + 1) * scale);
 		}
 	}
 
-	for (int i = 0; i < ((EL - 1) * (EL - 1)) * 2; ++i) {
+	for (int i = 0; i < (EL - 1) * (EL - 1) * 6; ++i) {
 		indices.push_back(i);
 	}
+
+	for (int i = 0; i < 9; ++i) std::cout << vertices[i] << " ";
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -88,8 +90,9 @@ Terrain::Terrain() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
+	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -143,8 +146,6 @@ void Terrain::draw(GLuint shader) {
 
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
-
-	fprintf(stdout, "drawing\n");
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
