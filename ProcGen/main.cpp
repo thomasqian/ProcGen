@@ -12,6 +12,7 @@ void setupCallbacks() {
 	glfwSetFramebufferSizeCallback(window, Window::resizeCallback);
 	glfwSetMouseButtonCallback(window, Window::mouseButtonCallback);
 	glfwSetCursorPosCallback(window, Window::cursorPosCallback);
+	glfwSetScrollCallback(window, Window::scrollCallback);
 }
 
 void setupGLEW() {

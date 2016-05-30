@@ -12,7 +12,7 @@
 // 2^n + 1
 #define EL 257
 
-const static unsigned int seed = 5;
+const static unsigned int seed = 500;
 const static float scale = 50.0f;
 
 class Terrain {

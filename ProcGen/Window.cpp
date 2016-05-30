@@ -60,7 +60,7 @@ GLFWwindow* Window::createWindow(int width, int height) {
 	mouseLeftDown = false;
 
 	// 4x antialiasing
-	glfwWindowHint(GLFW_SAMPLES, 4);
+	//glfwWindowHint(GLFW_SAMPLES, 4);
 
 	// Create the GLFW window
 	GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
@@ -189,4 +189,8 @@ void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
 	prevMouseX = mouseX;
 	prevMouseY = mouseY;
+}
+
+void Window::scrollCallback(GLFWwindow* window, double sx, double sy) {
+	camPos = camPos + camLook*(float)sy;
 }
