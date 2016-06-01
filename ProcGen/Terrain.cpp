@@ -115,7 +115,52 @@ Terrain::Terrain() {
 		}
 	}
 
-	for (int i = 0; i < (EL - 1) * (EL - 1) * 6; ++i) {
+	float top = (float)(EL-1) * scale;
+	for (int z = 0; z < EL - 1; ++z){
+		//first triangle bottom
+		vertices.push_back(0.0f); vertices.push_back(hm[0][z]); vertices.push_back((float)z * scale);
+		vertices.push_back(0.0f); vertices.push_back(min); vertices.push_back((float)z * scale);
+		vertices.push_back(0.0f); vertices.push_back(min); vertices.push_back((float)(z+1) * scale);
+
+		//second triangle bottom
+		vertices.push_back(0.0f); vertices.push_back(hm[0][z]); vertices.push_back((float)z * scale);
+		vertices.push_back(0.0f); vertices.push_back(min); vertices.push_back((float)(z+1) * scale);
+		vertices.push_back(0.0f); vertices.push_back(hm[0][z+1]); vertices.push_back((float)(z+1) * scale);
+
+		//first triangle top
+		vertices.push_back(top); vertices.push_back(hm[EL-1][z]); vertices.push_back((float)z * scale);
+		vertices.push_back(top); vertices.push_back(min); vertices.push_back((float)(z+1) * scale);
+		vertices.push_back(top); vertices.push_back(min); vertices.push_back((float)z * scale);
+
+		//second triangle top
+		vertices.push_back(top); vertices.push_back(hm[EL-1][z]); vertices.push_back((float)z * scale);
+		vertices.push_back(top); vertices.push_back(hm[EL-1][z+1]); vertices.push_back((float)(z+1) * scale);
+		vertices.push_back(top); vertices.push_back(min); vertices.push_back((float)(z+1) * scale);
+	}
+	for (int x = 0; x < EL - 1; ++x){
+		//first triangle bottom
+		vertices.push_back((float)x * scale); vertices.push_back(hm[x][0]); vertices.push_back(0.0f);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(min); vertices.push_back(0.0f);
+		vertices.push_back((float)x * scale); vertices.push_back(min); vertices.push_back(0.0f);
+
+		//second triangle bottom
+		vertices.push_back((float)x * scale); vertices.push_back(hm[x][0]); vertices.push_back(0.0f);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(hm[x+1][0]); vertices.push_back(0.0f);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(min); vertices.push_back(0.0f);
+
+		//first triangle top
+		vertices.push_back((float)x * scale); vertices.push_back(hm[x][EL-1]); vertices.push_back(top);
+		vertices.push_back((float)x * scale); vertices.push_back(min); vertices.push_back(top);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(min); vertices.push_back(top);
+
+		//second triangle top
+		vertices.push_back((float)x * scale); vertices.push_back(hm[x][EL-1]); vertices.push_back(top);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(min); vertices.push_back(top);
+		vertices.push_back((float)(x+1) * scale); vertices.push_back(hm[x+1][EL-1]); vertices.push_back(top);
+	}
+
+
+	for (int i = 0; i < (EL - 1) * (EL - 1) * 6 + (EL-1)*24; ++i) {
 		indices.push_back(i);
 	}
 

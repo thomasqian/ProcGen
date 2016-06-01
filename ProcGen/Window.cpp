@@ -10,7 +10,7 @@ GLuint skyboxShader;
 Skybox* skybox;
 
 // Default camera parameters
-glm::vec3 camPos(0.0f, 100.0f, 00.0f);		
+glm::vec3 camPos(0.0f, 200.0f, 00.0f);		
 glm::vec3 camLook(1.0f, 0.0f, 1.0f);	
 glm::vec3 camUp(0.0f, 1.0f, 0.0f);			
 
@@ -23,6 +23,7 @@ double Window::prevMouseX;
 double Window::prevMouseY;
 
 bool Window::mouseLeftDown;
+bool Window::mouseMidDown;
 bool wDown, aDown, sDown, dDown, qDown, eDown;
 
 glm::mat4 Window::P;
@@ -184,6 +185,15 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
 		t->toggle();
 	}
+	else if(key == GLFW_KEY_TAB && action == GLFW_PRESS){
+		mouseMidDown = !mouseMidDown;
+		if(mouseMidDown){
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+	}
  }
 
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
@@ -195,27 +205,36 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 		}
 	}
 	else if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS){
-		t->toggle();
+		mouseMidDown = !mouseMidDown;
+		if(mouseMidDown){
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 }
 
-void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+void Window::cursorPosCallback(GLFWwindow* window, double xpos, double ypos){
 	mouseX = xpos;
 	mouseY = ypos;
-
-	if (mouseLeftDown) {
-		float dx = mouseX - prevMouseX;
-		float dy = mouseY - prevMouseY;
-
+	if(mouseMidDown){
+		float dx = xpos - (float)Window::width/2;
+		float dy = ypos - (float)Window::height/2;
 		glm::mat4 rotateLR = glm::rotate(I, -dx * ROTSCALE, UP);
 		glm::vec3 xaxis = glm::cross(UP, camLook);
-
 		glm::mat4 rotateUD = glm::rotate(I, dy * ROTSCALE, xaxis);
-
+		camLook = glm::vec3(rotateUD * rotateLR * glm::vec4(camLook, 0.0f));
+		glfwSetCursorPos(window, (double)Window::width/2, (double)Window::height/2);
+	}
+	else if (mouseLeftDown) {
+		float dx = mouseX - prevMouseX;
+		float dy = mouseY - prevMouseY;
+		glm::mat4 rotateLR = glm::rotate(I, -dx * ROTSCALE, UP);
+		glm::vec3 xaxis = glm::cross(UP, camLook);
+		glm::mat4 rotateUD = glm::rotate(I, dy * ROTSCALE, xaxis);
 		camLook = glm::vec3(rotateUD * rotateLR * glm::vec4(camLook, 0.0f));
 	}
-
-	V = glm::lookAt(camPos, camPos + camLook, camUp);
 	prevMouseX = mouseX;
 	prevMouseY = mouseY;
 }

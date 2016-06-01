@@ -30,5 +30,5 @@ public:
 
 private:
 	static double prevMouseX, prevMouseY, mouseX, mouseY;
-	static bool mouseLeftDown;
+	static bool mouseLeftDown, mouseMidDown;
 };

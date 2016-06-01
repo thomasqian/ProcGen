@@ -51,7 +51,7 @@ void printVersions() {
 }
 
 int main(void) {
-	window = Window::createWindow(1920, 1440);
+	window = Window::createWindow(800, 600);
 	printVersions();
 	setupCallbacks();
 	setupOpenGLSettings();

@@ -17,7 +17,7 @@
 const static int EL = 129;
 //const static unsigned int seed = 123;
 const static float scale = 5.0f;
-const static float initialOffset = 100.0f;
+const static float initialOffset = 150.0f;
 
 class Terrain {
 private:

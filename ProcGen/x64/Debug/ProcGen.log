@@ -1,15 +1,8 @@
 ﻿  Window.cpp
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(180): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(181): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Terrain.cpp
-c:\users\user\documents\assignments\cse 167\procgen\procgen\terrain.cpp(15): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\terrain.cpp(16): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\terrain.cpp(17): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\terrain.cpp(18): warning C4244: '=': conversion from 'unsigned __int64' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\terrain.cpp(197): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-  Skybox.cpp
-  Object.cpp
-  main.cpp
-  Generating Code...
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(222): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(223): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(231): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(232): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.exe
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.pdb (Partial PDB)
