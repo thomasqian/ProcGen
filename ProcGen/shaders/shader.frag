@@ -2,17 +2,22 @@
 
 out vec4 color;
 in float height;
+in vec2 uv;
 
-uniform bool grayscale;
+uniform sampler2D sand;
+uniform sampler2D grass;
+uniform sampler2D snow;
+
+uniform int style;
 uniform float min;
 uniform float max;
 
 void main() {
 	float alt = (height-min)/(max-min); //apprx 0-1
-	if(grayscale){
+	if(style == 2){
 		color = vec4(alt, alt, alt, 1);
 	}
-	else{
+	else if(style == 1){
 		float r = 0;
 		float g = 0;
 		float b = 0;
@@ -28,5 +33,33 @@ void main() {
 		g = max(0, min(1, g));
 		b = max(0, min(1, b));
 		color = vec4(r, g, b, 1);
+	}
+	else{
+		float sandW = 0;
+		float grassW = 0;
+		float snowW = 0;
+
+		sandW = 3-10*alt;
+		if(alt<0.5){
+			grassW = -2+10*alt;
+		}
+		else{
+			grassW = 8-10*alt;
+		}
+		snowW = -7+10*alt;
+	
+		sandW = max(0, min(1, sandW));
+		grassW = max(0, min(1, grassW));
+		snowW = max(0, min(1, snowW));
+
+		vec4 sandC = texture2D(sand, uv);
+		vec4 grassC = texture2D(grass, uv);
+		vec4 snowC = texture2D(snow, uv);
+	
+		sandC = sandC*sandW;
+		grassC = grassC*grassW;
+		snowC = snowC*snowW;
+
+		color = sandC+grassC+snowC;
 	}
 }

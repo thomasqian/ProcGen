@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.h"
+
 #include <random>
 #include <iostream>
 #include <vector>
@@ -23,7 +24,7 @@ private:
 	float hm[EL][EL];
 	bool set[EL][EL];
 
-	bool grayscale;
+	int style;
 	float min, max;
 
 	std::vector<GLfloat> vertices;

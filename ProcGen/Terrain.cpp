@@ -4,7 +4,6 @@ std::mt19937_64 rng(time(NULL));
 glm::mat4 toWorld(1.0f);
 
 Terrain::Terrain() {
-	//std::uniform_int_distribution<int> gen(min, max); // uniform, unbiased
 
 	for (int x = 0; x < EL; ++x) {
 		for (int z = 0; z < EL; ++z) {
@@ -40,7 +39,7 @@ Terrain::Terrain() {
 		fprintf(stderr, "\n");
 	}*/
 
-	grayscale = false;
+	style = 0;
 	min = hm[0][0];
 	max = hm[0][0];
 	for (int z = 0; z < EL; z++) {
@@ -186,12 +185,13 @@ bool Terrain::inBounds(int x, int z) {
 void Terrain::draw(GLuint shader) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
-	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
 
-	glUniform1i(glGetUniformLocation(shader, "grayscale"), grayscale);
+	glUniform1i(glGetUniformLocation(shader, "style"), style);
 	glUniform1f(glGetUniformLocation(shader, "min"), min);
 	glUniform1f(glGetUniformLocation(shader, "max"), max);
+
+	glUniform1f(glGetUniformLocation(shader, "length"), (float)((float)EL * (float)scale));
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -297,5 +297,5 @@ void Terrain::generateSquare(int x, int z, int d, float o) {
 }
 
 void Terrain::toggle(){
-	grayscale = !grayscale;
+	style = (style + 1) % 3;
 }

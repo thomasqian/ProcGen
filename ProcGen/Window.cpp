@@ -10,8 +10,8 @@ GLuint skyboxShader;
 Skybox* skybox;
 
 // Default camera parameters
-glm::vec3 camPos(0.0f, 0.0f, 00.0f);		
-glm::vec3 camLook(0.0f, 0.0f, 1.0f);	
+glm::vec3 camPos(0.0f, 100.0f, 00.0f);		
+glm::vec3 camLook(1.0f, 0.0f, 1.0f);	
 glm::vec3 camUp(0.0f, 1.0f, 0.0f);			
 
 int Window::width;
@@ -32,10 +32,17 @@ glm::vec3 UP(0, 1, 0);
 glm::mat4 rotateY90(glm::rotate(I, glm::pi<float>() / 2.0f, UP));
 
 Terrain* t;
+Texture* grass;
+Texture* sand;
+Texture* snow;
 
 void Window::initialize() {
 	skybox = new Skybox();
 	t = new Terrain();
+
+	grass = new Texture("textures/grass.ppm");
+	sand = new Texture("textures/sand.ppm");
+	snow = new Texture("textures/snow.ppm");
 
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
@@ -135,6 +142,20 @@ void Window::displayCallback(GLFWwindow* window) {
 
 	glCullFace(GL_BACK);
 	glUseProgram(shaderProgram);
+
+	glUniform1i(glGetUniformLocation(shaderProgram, "sand"), 1);
+	glUniform1i(glGetUniformLocation(shaderProgram, "grass"), 2);
+	glUniform1i(glGetUniformLocation(shaderProgram, "snow"), 3);
+
+	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_2D, sand->textureID);
+
+	glActiveTexture(GL_TEXTURE0 + 2);
+	glBindTexture(GL_TEXTURE_2D, grass->textureID);
+
+	glActiveTexture(GL_TEXTURE0 + 3);
+	glBindTexture(GL_TEXTURE_2D, snow->textureID);
+
 	t->draw(shaderProgram);
 
 	glfwSwapBuffers(window);
@@ -156,8 +177,14 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		qDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_E) {
 		eDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
+	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+		delete(t);
+		t = new Terrain();
 	}
-}
+	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
+		t->toggle();
+	}
+ }
 
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT) { // rotation
