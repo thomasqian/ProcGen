@@ -20,6 +20,8 @@
     <None Include="shaders\shader.vert" />
     <None Include="shaders\skybox.frag" />
     <None Include="shaders\skybox.vert" />
+    <None Include="shaders\buildings.frag" />
+    <None Include="shaders\buildings.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -43,6 +45,9 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Building.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Building.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

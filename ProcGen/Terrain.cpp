@@ -8,6 +8,8 @@ Terrain::Terrain() {
 	for (int x = 0; x < EL; ++x) {
 		for (int z = 0; z < EL; ++z) {
 			set[x][z] = false;
+			flat[x][z] = false;
+			paved[x][z] = false;
 		}
 	}
 
@@ -22,6 +24,8 @@ Terrain::Terrain() {
 	set[EL-1][EL-1] = true;
 	
 	generate();
+
+	identify();
 	
 	/*for (int z = 0; z < EL; z++) {
 		for (int x = 0; x < EL; x++) {
@@ -187,6 +191,8 @@ Terrain::~Terrain() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+
+	for (int i = 0; i < buildings.size(); ++i) delete(buildings[i]);
 }
 
 void Terrain::generate() {
@@ -223,11 +229,37 @@ void Terrain::generate() {
 	}
 }
 
+void Terrain::identify() {
+	int flatCount = 0;
+	for (int z = 0; z < EL - 3; z++) {
+		for (int x = 0; x < EL - 3; x++) {
+			if (!flat[x][z] && !flat[x+1][z] && !flat[x+2][z] && !flat[x+3][z] &&
+				!flat[x][z+3] && !flat[x+1][z+3] && !flat[x+2][z+3] && !flat[x+3][z+3] &&
+				!flat[x][z+1] && !flat[x][z+2] && !flat[x+3][z+1] && !flat[x+3][z+2]) {
+				float avg = (hm[x][z]+hm[x+3][z]+hm[x][z+3]+hm[x+3][z+3])/4.0f;
+				if (abs(hm[x][z]-avg) < flatRange && abs(hm[x+3][z]-avg) < flatRange &&
+					abs(hm[x][z+3]-avg) < flatRange && abs(hm[x+3][z+3]-avg) < flatRange){
+					flatCount++;
+					for (int zz = z; zz <= z + 3; zz++){
+						for (int xx = x; xx <= x + 3; xx++){
+							hm[xx][zz] = avg;
+							flat[xx][zz] = true;
+						}
+					}
+					paved[x][z] = true;
+					buildings.push_back(new Building(x * scale, hm[x][z], z * scale, scale));
+				}
+			}
+		}
+	}
+	fprintf(stderr, "Flat Count: %d\n", flatCount);
+}
+
 bool Terrain::inBounds(int x, int z) {
 	return (x >= 0 && x < EL && z >= 0 && z < EL);
 }
 
-void Terrain::draw(GLuint shader) {
+void Terrain::draw(GLuint shader, GLuint buildingShader) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
@@ -241,6 +273,12 @@ void Terrain::draw(GLuint shader) {
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+
+	glDisable(GL_CULL_FACE);
+	for (int i = 0; i < buildings.size(); i++) {
+		buildings[i]->draw(buildingShader);
+	}
+	glEnable(GL_CULL_FACE);
 }
 
 void Terrain::generateDiamond(int x, int z, int d, float o) {

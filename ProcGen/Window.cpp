@@ -7,6 +7,7 @@ static const float MOVESPEED = 0.7f;
 
 GLuint shaderProgram;
 GLuint skyboxShader;
+GLuint buildingShader;
 Skybox* skybox;
 
 // Default camera parameters
@@ -47,6 +48,8 @@ void Window::initialize() {
 
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
+	buildingShader = LoadShaders("shaders/buildings.vert", "shaders/buildings.frag");
+
 	fprintf(stderr, "back in window\n");
 }
 
@@ -54,8 +57,13 @@ void Window::cleanUp() {
 	delete(skybox);
 	delete(t);
 
+	delete(grass);
+	delete(sand);
+	delete(snow);
+
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(skyboxShader);
+	glDeleteProgram(buildingShader);
 }
 
 GLFWwindow* Window::createWindow(int width, int height) {
@@ -157,7 +165,7 @@ void Window::displayCallback(GLFWwindow* window) {
 	glActiveTexture(GL_TEXTURE0 + 3);
 	glBindTexture(GL_TEXTURE_2D, snow->textureID);
 
-	t->draw(shaderProgram);
+	t->draw(shaderProgram, buildingShader);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
