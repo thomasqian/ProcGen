@@ -39,9 +39,8 @@ GLfloat Building::baseB[] = {
 };
 
 Building::Building(float x, float y, float z, float scale) {
-	//this->toWorld = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(scale)), glm::vec3(x, y, z));
-	//this->toWorld = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-	this->toWorld = glm::mat4(1.0f);
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
+	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat;
 
 	for (int i = 0; i < (int)(sizeof(baseA) / sizeof(GLfloat)); ++i) {
 		vertices.push_back(baseA[i]);
@@ -57,10 +56,10 @@ Building::Building(float x, float y, float z, float scale) {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size(), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW);
 
 
 	glVertexAttribPointer(0,// This first parameter x should be the same as the number passed into the line "layout (location = x)" in the vertex shader. In this case, it's 0. Valid values are 0 to GL_MAX_UNIFORM_LOCATIONS.
