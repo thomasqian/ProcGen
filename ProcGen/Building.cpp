@@ -260,7 +260,8 @@ GLfloat Building::topD[] = {
 
 Building::Building(float x, float y, float z, float scale) {
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat;
+	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), ((float)(rngB()%4)*glm::pi<float>())/2.0f, glm::vec3(0, 1, 0));
+	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat * rotateMat;
 
 	if(rngB()%2 == 0){
 		for (int i = 0; i < (int)(sizeof(baseA)/sizeof(GLfloat)); ++i) {
@@ -301,13 +302,13 @@ Building::Building(float x, float y, float z, float scale) {
 		for (int i = 0; i < (int)(sizeof(baseB)/sizeof(GLfloat)); ++i) {
 			vertices.push_back(baseB[i]);
 		}
-		if(rngB()%2 == 0){
+		//if(rngB()%2 == 0){
 			for (int i = 0; i < (int)(sizeof(midC)/sizeof(GLfloat)); ++i) {
 				vertices.push_back(midC[i]);
 			}
-		}
-		else{
-		}
+		//}
+		//else{
+		//}
 	}
 	
 	
