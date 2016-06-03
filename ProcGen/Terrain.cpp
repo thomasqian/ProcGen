@@ -247,7 +247,7 @@ void Terrain::identify() {
 						}
 					}
 					paved[x][z] = true;
-					buildings.push_back(new Building(x * scale, hm[x][z], z * scale, scale));
+					buildings.push_back(new Building(((float)x+1.5f) * scale, hm[x][z], ((float)z+1.5f) * scale, scale));
 				}
 			}
 		}
@@ -274,11 +274,12 @@ void Terrain::draw(GLuint shader, GLuint buildingShader) {
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	for (int i = 0; i < buildings.size(); i++) {
 		buildings[i]->draw(buildingShader);
 	}
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 }
 
 void Terrain::generateDiamond(int x, int z, int d, float o) {

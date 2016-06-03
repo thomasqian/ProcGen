@@ -1,32 +1,34 @@
 #include "Building.h"
 #include "Window.h"
 
+std::mt19937_64 rngB(time(NULL));
+
 GLfloat Building::baseA[] = {
-	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f, //A
 	-1.0f, 0.0f, 1.0f,
 	-1.0f, 0.0f, -1.0f,
 	-1.0f, 1.0f, 1.0f,
 	-1.0f, 0.0f, -1.0f,
 	-1.0f, 1.0f, -1.0f,
-	-1.0f, 1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f, //B
 	-1.0f, 0.0f, -1.0f,
 	1.0f, 0.0f, -1.0f,
 	-1.0f, 1.0f, -1.0f,
 	1.0f, 0.0f, -1.0f,
 	1.0f, 1.0f, -1.0f,
-	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f, //C
 	1.0f, 0.0f, -1.0f,
 	1.0f, 0.0f, 1.0f,
 	1.0f, 1.0f, -1.0f,
 	1.0f, 0.0f, 1.0f,
 	1.0f, 1.0f, 1.0f,
-	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f, //D
 	1.0f, 0.0f, 1.0f,
 	-1.0f, 0.0f, 1.0f,
 	1.0f, 1.0f, 1.0f,
 	-1.0f, 0.0f, 1.0f,
 	-1.0f, 1.0f, 1.0f,
-	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f, //E
 	-1.0f, 1.0f, -1.0f,
 	1.0f, 1.0f, -1.0f,
 	-1.0f, 1.0f, 1.0f,
@@ -35,16 +37,283 @@ GLfloat Building::baseA[] = {
 };
 
 GLfloat Building::baseB[] = {
-	1.0f
+	-1.0f, 1.0f, 1.0f, //A
+	-1.0f, 0.0f, 1.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 0.0f, 0.0f,
+	-1.0f, 1.0f, 0.0f,
+	-1.0f, 1.0f, 0.0f, //B
+	-1.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 0.0f,
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, //C
+	0.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, -1.0f,
+	0.0f, 1.0f, -1.0f,
+	0.0f, 1.0f, -1.0f, //D
+	0.0f, 0.0f, -1.0f,
+	1.0f, 0.0f, -1.0f,
+	0.0f, 1.0f, -1.0f,
+	1.0f, 0.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f, //E
+	1.0f, 0.0f, -1.0f,
+	1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f, //F
+	1.0f, 0.0f, 1.0f,
+	-1.0f, 0.0f, 1.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 0.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f, //G
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	1.0f, 1.0f, 1.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	0.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+};
+
+GLfloat Building::midA[] = {
+	-0.5f, 2.0f, -0.5f, //A
+	-1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, -0.5f,
+	1.0f, 1.0f, -1.0f,
+	0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, -0.5f, //B
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, -0.5f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, 0.5f,
+	0.5f, 2.0f, 0.5f, //C
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, 0.5f,
+	-1.0f, 1.0f, 1.0f,
+	-0.5f, 2.0f, 0.5f,
+	-0.5f, 2.0f, 0.5f, //D
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, 0.5f,
+	-1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, -0.5f,
+	-0.5f, 2.0f, 0.5f, //E
+	-0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, -0.5f,
+	-0.5f, 2.0f, 0.5f,
+	0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, 0.5f
+};
+
+GLfloat Building::midB[] = {
+	-0.5f, 2.0f, -1.0f, //A
+	-1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, -1.0f, //B
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, 1.0f,
+	0.5f, 2.0f, 1.0f, //C
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	0.5f, 2.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-0.5f, 2.0f, 1.0f,
+	-0.5f, 2.0f, 1.0f, //D
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, 1.0f,
+	-1.0f, 1.0f, -1.0f,
+	-0.5f, 2.0f, -1.0f,
+	-0.5f, 2.0f, 1.0f, //E
+	-0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, -1.0f,
+	-0.5f, 2.0f, 1.0f,
+	0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, 1.0f
+};
+
+GLfloat Building::midC[] = {
+	-0.5f, 1.5f, 0.5f, //A
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	-0.5f, 1.5f, 0.5f, //B
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	-0.5f, 1.5f, 0.5f,
+	0.0f, 1.0f, 0.0f,
+	0.5f, 1.5f, 0.5f,
+	0.5f, 1.5f, 0.5f, //C
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, -1.0f,
+	0.5f, 1.5f, 0.5f,
+	0.0f, 1.0f, -1.0f,
+	0.5f, 1.5f, -0.5f,
+	0.5f, 1.5f, -0.5f, //D
+	0.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	0.5f, 1.5f, -0.5f, //E
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 1.5f, -0.5f,
+	1.0f, 1.0f, 1.0f,
+	0.5f, 1.5f, 0.5f,
+	0.5f, 1.5f, 0.5f, //F
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	0.5f, 1.5f, 0.5f,
+	-1.0f, 1.0f, 1.0f,
+	-0.5f, 1.5f, 0.5f,
+};
+
+GLfloat Building::topA[] = {
+	0.0f, 2.5f, 0.0f, //A
+	-0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, -0.5f,
+	0.0f, 2.5f, 0.0f, //B
+	0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, 0.5f,
+	0.0f, 2.5f, 0.0f, //C
+	0.5f, 2.0f, 0.5f,
+	-0.5f, 2.0f, 0.5f,
+	0.0f, 2.5f, 0.0f, //D
+	-0.5f, 2.0f, 0.5f,
+	-0.5f, 2.0f, -0.5f,
+};
+
+GLfloat Building::topB[] = {
+	0.0f, 2.5f, -0.5f, //A
+	-0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, -0.5f,
+	0.0f, 2.5f, -0.5f, //B
+	0.5f, 2.0f, -0.5f,
+	0.5f, 2.0f, 0.5f,
+	0.0f, 2.5f, -0.5f,
+	0.5f, 2.0f, 0.5f,
+	0.0f, 2.5f, 0.5f,
+	0.0f, 2.5f, 0.5f, //C
+	0.5f, 2.0f, 0.5f,
+	-0.5f, 2.0f, 0.5f,
+	0.0f, 2.5f, 0.5f, //D
+	-0.5f, 2.0f, 0.5f,
+	-0.5f, 2.0f, -0.5f,
+	0.0f, 2.5f, 0.5f,
+	-0.5f, 2.0f, -0.5f,
+	0.0f, 2.5f, -0.5f,
+};
+
+GLfloat Building::topC[] = {
+	0.0f, 2.5f, 0.0f, //A
+	-0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, -1.0f,
+	0.0f, 2.5f, 0.0f, //B
+	0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, 1.0f,
+	0.0f, 2.5f, 0.0f, //C
+	0.5f, 2.0f, 1.0f,
+	-0.5f, 2.0f, 1.0f,
+	0.0f, 2.5f, 0.0f, //D
+	-0.5f, 2.0f, 1.0f,
+	-0.5f, 2.0f, -1.0f,
+};
+
+GLfloat Building::topD[] = {
+	0.0f, 2.5f, -1.0f, //A
+	-0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, -1.0f,
+	0.0f, 2.5f, -1.0f, //B
+	0.5f, 2.0f, -1.0f,
+	0.5f, 2.0f, 1.0f,
+	0.0f, 2.5f, -1.0f,
+	0.5f, 2.0f, 1.0f,
+	0.0f, 2.5f, 1.0f,
+	0.0f, 2.5f, 1.0f, //C
+	0.5f, 2.0f, 1.0f,
+	-0.5f, 2.0f, 1.0f,
+	0.0f, 2.5f, 1.0f, //D
+	-0.5f, 2.0f, 1.0f,
+	-0.5f, 2.0f, -1.0f,
+	0.0f, 2.5f, 1.0f,
+	-0.5f, 2.0f, -1.0f,
+	0.0f, 2.5f, -1.0f,
 };
 
 Building::Building(float x, float y, float z, float scale) {
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat;
 
-	for (int i = 0; i < (int)(sizeof(baseA) / sizeof(GLfloat)); ++i) {
-		vertices.push_back(baseA[i]);
-		if (i % 3 == 0) indices.push_back(i/3);
+	if(rngB()%2 == 0){
+		for (int i = 0; i < (int)(sizeof(baseA)/sizeof(GLfloat)); ++i) {
+			vertices.push_back(baseA[i]);
+		}
+		if(rngB()%2 == 0){
+			for (int i = 0; i < (int)(sizeof(midA)/sizeof(GLfloat)); ++i) {
+				vertices.push_back(midA[i]);
+			}
+			if(rngB()%2 == 0){
+				for (int i = 0; i < (int)(sizeof(topA)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topA[i]);
+				}
+			}
+			else{
+				for (int i = 0; i < (int)(sizeof(topB)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topB[i]);
+				}
+			}
+		}
+		else{
+			for (int i = 0; i < (int)(sizeof(midB)/sizeof(GLfloat)); ++i) {
+				vertices.push_back(midB[i]);
+			}
+			if(rngB()%2 == 0){
+				for (int i = 0; i < (int)(sizeof(topC)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topC[i]);
+				}
+			}
+			else{
+				for (int i = 0; i < (int)(sizeof(topD)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topD[i]);
+				}
+			}
+		}
+	}
+	else{
+		for (int i = 0; i < (int)(sizeof(baseB)/sizeof(GLfloat)); ++i) {
+			vertices.push_back(baseB[i]);
+		}
+		if(rngB()%2 == 0){
+			for (int i = 0; i < (int)(sizeof(midC)/sizeof(GLfloat)); ++i) {
+				vertices.push_back(midC[i]);
+			}
+		}
+		else{
+		}
+	}
+	
+	
+
+	for(int i = 0; i < vertices.size(); i++){
+		indices.push_back(i);
 	}
 
 	// Create buffers/arrays

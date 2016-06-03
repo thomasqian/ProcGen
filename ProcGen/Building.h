@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/mat4x4.hpp> // glm::mat4
@@ -23,6 +24,14 @@ private:
 	std::vector<GLuint> indices;
 
 	static GLfloat baseA[];
+		static GLfloat midA[];
+			static GLfloat topA[];
+			static GLfloat topB[];
+		static GLfloat midB[];
+			static GLfloat topC[];
+			static GLfloat topD[];
+
 	static GLfloat baseB[];
+		static GLfloat midC[];
 };
 

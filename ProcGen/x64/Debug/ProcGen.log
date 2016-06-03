@@ -1,8 +1,4 @@
-﻿  Window.cpp
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(222): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(223): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(231): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(232): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+﻿  Building.cpp
+c:\users\user\documents\assignments\cse 167\procgen\procgen\building.cpp(360): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.exe
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.pdb (Partial PDB)
