@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "Building.h"
+#include "Texture.h"
 
 #include <random>
 #include <iostream>
@@ -45,7 +46,7 @@ public:
 	void identify();
 	bool inBounds(int, int);
 
-	void draw(GLuint, GLuint);
+	void draw(GLuint, GLuint, Texture*, Texture*);
 
 	void generateDiamond(int, int, int, float);
 	void generateSquare(int, int, int, float);

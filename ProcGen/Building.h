@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Texture.h"
+
 #include <random>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,7 +16,7 @@ public:
 	Building(float, float, float, float);
 	~Building();
 
-	void draw(GLuint);
+	void draw(GLuint, Texture*, Texture*);
 
 private:
 	glm::mat4 toWorld;

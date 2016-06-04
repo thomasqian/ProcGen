@@ -351,11 +351,20 @@ Building::~Building() {
 	glDeleteBuffers(1, &EBO);
 }
 
-void Building::draw(GLuint shader) {
+void Building::draw(GLuint shader, Texture* logs, Texture* shingles) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
+
+	glUniform1i(glGetUniformLocation(shader, "logs"), 0);
+	glUniform1i(glGetUniformLocation(shader, "shingles"), 1);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, logs->textureID);
+
+	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_2D, shingles->textureID);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

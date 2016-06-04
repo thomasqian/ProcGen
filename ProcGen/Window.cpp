@@ -37,6 +37,8 @@ Terrain* t;
 Texture* grass;
 Texture* sand;
 Texture* snow;
+Texture* logs;
+Texture* shingles;
 
 void Window::initialize() {
 	skybox = new Skybox();
@@ -45,6 +47,8 @@ void Window::initialize() {
 	grass = new Texture("textures/grass.ppm");
 	sand = new Texture("textures/sand.ppm");
 	snow = new Texture("textures/snow.ppm");
+	logs = new Texture("textures/wood.ppm");
+	shingles = new Texture("textures/shingles.ppm");
 
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
@@ -165,7 +169,7 @@ void Window::displayCallback(GLFWwindow* window) {
 	glActiveTexture(GL_TEXTURE0 + 3);
 	glBindTexture(GL_TEXTURE_2D, snow->textureID);
 
-	t->draw(shaderProgram, buildingShader);
+	t->draw(shaderProgram, buildingShader, logs, shingles);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();

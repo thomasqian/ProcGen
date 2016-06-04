@@ -259,7 +259,7 @@ bool Terrain::inBounds(int x, int z) {
 	return (x >= 0 && x < EL && z >= 0 && z < EL);
 }
 
-void Terrain::draw(GLuint shader, GLuint buildingShader) {
+void Terrain::draw(GLuint shader, GLuint buildingShader, Texture* logs, Texture* shingles) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
@@ -277,7 +277,7 @@ void Terrain::draw(GLuint shader, GLuint buildingShader) {
 	//glDisable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	for (int i = 0; i < buildings.size(); i++) {
-		buildings[i]->draw(buildingShader);
+		buildings[i]->draw(buildingShader, logs, shingles);
 	}
 	//glEnable(GL_CULL_FACE);
 }
