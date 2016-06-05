@@ -20,7 +20,7 @@ public:
 
 private:
 	glm::mat4 toWorld;
-	GLuint VBO, VAO, EBO;
+	GLuint VBO, VAO, NBO, EBO;
 
 	std::vector<GLfloat> vertices;
 	std::vector<GLuint> indices;
