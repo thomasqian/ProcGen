@@ -342,7 +342,23 @@ GLfloat Building::topF[] = {
 	-1.0f, 2.0f, 0.0f
 };
 
-Building::Building(float x, float y, float z, float scale) {
+Texture* Building::wood;
+Texture* Building::shingles;
+Texture* Building::snowwall;
+Texture* Building::snowroof;
+Texture* Building::sandbrick;
+Texture* Building::strawroof;
+
+void Building::initTextures() {
+	wood = new Texture("textures/wood.ppm");
+	shingles = new Texture("textures/shingles.ppm");
+	snowwall = new Texture("textures/snowwall.ppm");
+	snowroof = new Texture("textures/snowroof.ppm");
+	sandbrick = new Texture("textures/sandbrick.ppm");
+	strawroof = new Texture("textures/strawroof.ppm");
+}
+
+Building::Building(float x, float y, float z, float scale) : x(x), y(y), z(z) {
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
 	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), ((float)(rngB()%4)*glm::pi<float>())/2.0f, glm::vec3(0, 1, 0));
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat * rotateMat;
@@ -459,7 +475,16 @@ Building::~Building() {
 	glDeleteBuffers(1, &NBO);
 }
 
-void Building::draw(GLuint shader, Texture* logs, Texture* shingles) {
+void Building::freeTextures() {
+	delete(wood);
+	delete(shingles);
+	delete(snowwall);
+	delete(snowroof);
+	delete(sandbrick);
+	delete(strawroof);
+}
+
+void Building::draw(GLuint shader, float min, float max) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUseProgram(shader);
@@ -467,14 +492,29 @@ void Building::draw(GLuint shader, Texture* logs, Texture* shingles) {
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, &toWorld[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "modelUnscaled"), 1, GL_FALSE, &toWorldUnscaled[0][0]);
 
-	glUniform1i(glGetUniformLocation(shader, "logs"), 0);
+	glUniform1f(glGetUniformLocation(shader, "min"), min);
+	glUniform1f(glGetUniformLocation(shader, "max"), max);
+	glUniform1f(glGetUniformLocation(shader, "ypos"), y);
+
+	glUniform1i(glGetUniformLocation(shader, "wood"), 0);
 	glUniform1i(glGetUniformLocation(shader, "shingles"), 1);
+	glUniform1i(glGetUniformLocation(shader, "snowwall"), 2);
+	glUniform1i(glGetUniformLocation(shader, "snowroof"), 3);
+	glUniform1i(glGetUniformLocation(shader, "sandbrick"), 4);
+	glUniform1i(glGetUniformLocation(shader, "strawroof"), 5);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, logs->textureID);
-
+	glBindTexture(GL_TEXTURE_2D, wood->textureID);
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_2D, shingles->textureID);
+	glActiveTexture(GL_TEXTURE0 + 2);
+	glBindTexture(GL_TEXTURE_2D, snowwall->textureID);
+	glActiveTexture(GL_TEXTURE0 + 3);
+	glBindTexture(GL_TEXTURE_2D, snowroof->textureID);
+	glActiveTexture(GL_TEXTURE0 + 4);
+	glBindTexture(GL_TEXTURE_2D, sandbrick->textureID);
+	glActiveTexture(GL_TEXTURE0 + 5);
+	glBindTexture(GL_TEXTURE_2D, strawroof->textureID);
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

@@ -16,12 +16,16 @@ public:
 	Building(float, float, float, float);
 	~Building();
 
-	void draw(GLuint, Texture*, Texture*);
+	static void initTextures();
+	static void freeTextures();
+	void draw(GLuint, float, float);
 
 private:
 	glm::mat4 toWorld;
 	glm::mat4 toWorldUnscaled;
 	GLuint VBO, VAO, NBO, EBO;
+
+	float x, y, z;
 
 	std::vector<GLfloat> vertices;
 	std::vector<GLuint> indices;
@@ -40,5 +44,12 @@ private:
 		static GLfloat midD[];
 			static GLfloat topE[];
 			static GLfloat topF[];
+
+	static Texture* wood;
+	static Texture* shingles;
+	static Texture* snowwall;
+	static Texture* snowroof;
+	static Texture* sandbrick;
+	static Texture* strawroof;
 };
 

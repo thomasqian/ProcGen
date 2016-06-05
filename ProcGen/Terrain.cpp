@@ -185,6 +185,8 @@ Terrain::Terrain() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	Building::initTextures();
 }
 
 Terrain::~Terrain() {
@@ -193,6 +195,8 @@ Terrain::~Terrain() {
 	glDeleteBuffers(1, &EBO);
 
 	for (int i = 0; i < buildings.size(); ++i) delete(buildings[i]);
+
+	Building::freeTextures();
 }
 
 void Terrain::generate() {
@@ -277,7 +281,7 @@ void Terrain::draw(GLuint shader, GLuint buildingShader, Texture* logs, Texture*
 	//glDisable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	for (int i = 0; i < buildings.size(); i++) {
-		buildings[i]->draw(buildingShader, logs, shingles);
+		buildings[i]->draw(buildingShader, min, max);
 	}
 	//glEnable(GL_CULL_FACE);
 }

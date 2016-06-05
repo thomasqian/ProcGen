@@ -2,8 +2,16 @@
 
 out vec4 color;
 
-uniform sampler2D logs;
+uniform sampler2D wood;
 uniform sampler2D shingles;
+uniform sampler2D snowwall;
+uniform sampler2D snowroof;
+uniform sampler2D sandbrick;
+uniform sampler2D strawroof;
+
+uniform float min;
+uniform float max;
+uniform float ypos;
 
 in vec3 fragPos;
 in float height;
@@ -11,7 +19,9 @@ in vec3 fragNormal;
 
 vec2 tex;
 
-void main() {	
+void main() {
+	float alt = (ypos-min) / (max-min); //apprx 0-1
+
 	float x, y, z;
 	x = fragNormal.x;
 	y = fragNormal.y;
@@ -42,8 +52,20 @@ void main() {
 	}
 
 	if (fragNormal.y == 0) {
-		color = texture2D(logs, tex);
+		if (alt < 0.2) {
+			color = texture2D(sandbrick, tex);
+		} else if (alt < 0.7) {
+			color = texture2D(wood, tex);
+		} else {
+			color = texture2D(snowwall, tex);
+		}
 	} else {
-		color = texture2D(shingles, tex);
+		if (alt < 0.2) {
+			color = texture2D(strawroof, tex);
+		} else if (alt < 0.7) {
+			color = texture2D(shingles, tex);
+		} else {
+			color = texture2D(snowroof, tex);
+		}
 	}
 }
