@@ -346,6 +346,7 @@ Building::Building(float x, float y, float z, float scale) {
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
 	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), ((float)(rngB()%4)*glm::pi<float>())/2.0f, glm::vec3(0, 1, 0));
 	this->toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * scaleMat * rotateMat;
+	this->toWorldUnscaled = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z)) * rotateMat;
 
 	if(rngB()%2 == 0){
 		for (int i = 0; i < (int)(sizeof(baseA)/sizeof(GLfloat)); ++i) {
@@ -417,7 +418,7 @@ Building::Building(float x, float y, float z, float scale) {
 			glm::vec3 pointA = glm::vec3(vertices[i + 0], vertices[i + 1], vertices[i + 2]);
 			glm::vec3 pointB = glm::vec3(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
 			glm::vec3 pointC = glm::vec3(vertices[i + 6], vertices[i + 7], vertices[i + 8]);
-			glm::vec3 norm = glm::cross(pointB - pointA, pointC - pointA);
+			glm::vec3 norm = glm::normalize(glm::cross(pointB - pointA, pointC - pointA));
 			normals.push_back(norm);
 			normals.push_back(norm);
 			normals.push_back(norm);
@@ -464,6 +465,7 @@ void Building::draw(GLuint shader, Texture* logs, Texture* shingles) {
 	glUseProgram(shader);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, &toWorld[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shader, "modelUnscaled"), 1, GL_FALSE, &toWorldUnscaled[0][0]);
 
 	glUniform1i(glGetUniformLocation(shader, "logs"), 0);
 	glUniform1i(glGetUniformLocation(shader, "shingles"), 1);
