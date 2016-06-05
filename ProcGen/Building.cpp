@@ -186,6 +186,54 @@ GLfloat Building::midC[] = {
 	-0.5f, 1.5f, 0.5f,
 };
 
+GLfloat Building::midD[] = {
+	-1.0f, 2.0f, 1.0f, //A
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	-1.0f, 2.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	-1.0f, 2.0f, 0.0f,
+
+	-1.0f, 2.0f, 0.0f, //B
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	-1.0f, 2.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 2.0f, 0.0f,
+
+	0.0f, 2.0f, 0.0f, //C
+	0.0f, 1.0f, 0.0f,
+	0.0f, 1.0f, -1.0f,
+
+	0.0f, 2.0f, 0.0f, //D
+	0.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+	0.0f, 2.0f, 0.0f,
+	1.0f, 1.0f, -1.0f,
+	1.0f, 2.0f, 0.0f,
+
+	1.0f, 2.0f, 0.0f, //E
+	1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 2.0f, 0.0f,
+	1.0f, 1.0f, 1.0f,
+	1.0f, 2.0f, 1.0f,
+
+	1.0f, 2.0f, 1.0f, //F
+	1.0f, 1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 2.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	-1.0f, 2.0f, 1.0f,
+
+	1.0f, 2.0f, 1.0f, //G
+	-1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 0.0f,
+};
+
 GLfloat Building::topA[] = {
 	0.0f, 2.5f, 0.0f, //A
 	-0.5f, 2.0f, -0.5f,
@@ -258,6 +306,42 @@ GLfloat Building::topD[] = {
 	0.0f, 2.5f, -1.0f,
 };
 
+GLfloat Building::topE[] = {
+	0.0f, 2.5f, 0.5f, //A
+	-1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 0.0f,
+	0.0f, 2.5f, 0.5f, //B
+	1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 1.0f,
+	0.0f, 2.5f, 0.5f, //C
+	1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 1.0f,
+	0.0f, 2.5f, 0.5f, //D
+	-1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 0.0f
+};
+
+GLfloat Building::topF[] = {
+	-1.0f, 2.5f, 0.5f, //A
+	-1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 0.0f,
+	-1.0f, 2.5f, 0.5f,
+	1.0f, 2.0f, 0.0f,
+	1.0f, 2.5f, 0.5f,
+	1.0f, 2.5f, 0.5f, //B
+	1.0f, 2.0f, 0.0f,
+	1.0f, 2.0f, 1.0f,
+	1.0f, 2.5f, 0.5f, //C
+	1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 1.0f,
+	1.0f, 2.5f, 0.5f,
+	-1.0f, 2.0f, 1.0f,
+	-1.0f, 2.5f, 0.5f,
+	-1.0f, 2.5f, 0.5f, //D
+	-1.0f, 2.0f, 1.0f,
+	-1.0f, 2.0f, 0.0f
+};
+
 Building::Building(float x, float y, float z, float scale) {
 	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
 	glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), ((float)(rngB()%4)*glm::pi<float>())/2.0f, glm::vec3(0, 1, 0));
@@ -302,20 +386,43 @@ Building::Building(float x, float y, float z, float scale) {
 		for (int i = 0; i < (int)(sizeof(baseB)/sizeof(GLfloat)); ++i) {
 			vertices.push_back(baseB[i]);
 		}
-		//if(rngB()%2 == 0){
+		if(rngB()%2 == 0){
 			for (int i = 0; i < (int)(sizeof(midC)/sizeof(GLfloat)); ++i) {
 				vertices.push_back(midC[i]);
 			}
-		//}
-		//else{
-		//}
+		}
+		else{
+			for (int i = 0; i < (int)(sizeof(midD)/sizeof(GLfloat)); ++i) {
+				vertices.push_back(midD[i]);
+			}
+			if(rngB()%2 == 0){
+				for (int i = 0; i < (int)(sizeof(topE)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topE[i]);
+				}
+			}
+			else{
+				for (int i = 0; i < (int)(sizeof(topF)/sizeof(GLfloat)); ++i) {
+					vertices.push_back(topF[i]);
+				}
+			}
+		}
 	}
 	
-	
-
 	for(int i = 0; i < vertices.size(); i++){
 		indices.push_back(i);
 	}
+	
+	for(int i = 0; i < vertices.size(); i++){
+		if(i % 9 == 0){
+			glm::vec3 sideA = glm::vec3(vertices[i+0], vertices[i+1], vertices[i+2]);
+			glm::vec3 sideB = glm::vec3(vertices[i+3], vertices[i+4], vertices[i+5]);
+			glm::vec3 norm = glm::cross(sideA, sideB);
+			normals.push_back(norm);
+			normals.push_back(norm);
+			normals.push_back(norm);
+		}
+	}
+	//fprintf(stderr, "n: %.2f, %.2f, %.2f\n", normals[normals.size()-1].x, normals[normals.size()-1].y, normals[normals.size()-1].z);
 
 	// Create buffers/arrays
 	glGenVertexArrays(1, &VAO);

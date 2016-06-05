@@ -1,4 +1,4 @@
 ﻿  Building.cpp
-c:\users\user\documents\assignments\cse 167\procgen\procgen\building.cpp(361): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\building.cpp(477): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.exe
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.pdb (Partial PDB)

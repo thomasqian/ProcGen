@@ -24,6 +24,7 @@ private:
 
 	std::vector<GLfloat> vertices;
 	std::vector<GLuint> indices;
+	std::vector<glm::vec3> normals;
 
 	static GLfloat baseA[];
 		static GLfloat midA[];
@@ -35,5 +36,8 @@ private:
 
 	static GLfloat baseB[];
 		static GLfloat midC[];
+		static GLfloat midD[];
+			static GLfloat topE[];
+			static GLfloat topF[];
 };
 
