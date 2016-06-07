@@ -338,9 +338,6 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		delete(t);
 		t = new Terrain();
-		FPV = false;
-		jumping = false;
-		falling = false;
 	}
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
 		t->toggle();
