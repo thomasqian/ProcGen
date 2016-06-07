@@ -12,9 +12,9 @@ GLuint buildingShader;
 Skybox* skybox;
 
 // Default camera parameters
-glm::vec3 camPos(0.0f, 200.0f, 0.0f);		
-glm::vec3 camLook(1.0f, 0.0f, 1.0f);	
-glm::vec3 camUp(0.0f, 1.0f, 0.0f);			
+glm::vec3 camPos(0.0f, 200.0f, 0.0f);
+glm::vec3 camLook(1.0f, 0.0f, 1.0f);
+glm::vec3 camUp(0.0f, 1.0f, 0.0f);
 
 int Window::width;
 int Window::height;
@@ -68,7 +68,7 @@ void Window::initialize() {
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
 	buildingShader = LoadShaders("shaders/buildings.vert", "shaders/buildings.frag");
 
-	fprintf(stderr, "back in window\n");
+	fprintf(stderr, "Loading complete\n");
 }
 
 void Window::cleanUp() {
@@ -341,6 +341,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	} else if (key == GLFW_KEY_LEFT_SHIFT) {
 		shiftDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+		fprintf(stderr, "Regenerating...\n");
 		delete(t);
 		t = new Terrain();
 	}
@@ -372,6 +373,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	else if (key == GLFW_KEY_F && action == GLFW_PRESS) {
 		timeOn = !timeOn;
 		timeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+		fprintf(stderr, "Daytime shading: %d\n", timeOn);
 	}
  }
 

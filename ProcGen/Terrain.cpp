@@ -203,7 +203,7 @@ void Terrain::generate() {
 	int distance = EL / 2;
 	float offset = initialOffset;
 	while (true) {
-		fprintf(stderr, "distance: %d, offset: %f\n", distance, offset);
+		//fprintf(stderr, "distance: %d, offset: %f\n", distance, offset);
 		for (int z = 0; z < EL; z++) {
 			for (int x = 0; x < EL; x++) {
 				if (!set[x][z]) {
@@ -230,10 +230,11 @@ void Terrain::generate() {
 			break;
 		}
 	}
-	fprintf(stderr, "done\n");
+	fprintf(stderr, "Generating complete\n");
 }
 
 void Terrain::identify() {
+	fprintf(stderr, "Populating...\n");
 	int flatCount = 0;
 	for (int z = 0; z < EL - 3; z++) {
 		for (int x = 0; x < EL - 3; x++) {
@@ -256,7 +257,7 @@ void Terrain::identify() {
 			}
 		}
 	}
-	fprintf(stderr, "Flat Count: %d\n", flatCount);
+	fprintf(stderr, "Populating complete\nCount: %d\n", flatCount);
 }
 
 bool Terrain::inBounds(int x, int z) {
