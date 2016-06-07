@@ -30,11 +30,12 @@ bool wDown, aDown, sDown, dDown, qDown, eDown, shiftDown;
 bool FPV;
 
 float Window::time;
+glm::vec3 Window::timeColor;
+bool Window::timeOn;
 
 float Window::jumpTime;
 float Window::jumpHeight;
 bool Window::jumping;
-bool Window::falling;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
@@ -55,6 +56,7 @@ void Window::initialize() {
 
 	FPV = false;
 	time = 0.0f;
+	timeOn = true;
 
 	grass = new Texture("textures/grass.ppm");
 	sand = new Texture("textures/sand.ppm");
@@ -131,60 +133,6 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 }
 
 void Window::idleCallback() {
-	if (wDown) {
-		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		if(shiftDown){
-			camPos += direction * MOVESPEED;
-		}
-		else{
-			camPos += direction * MOVESPEED2;
-		}
-	}
-	if (aDown) {
-		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
-		if(shiftDown){
-			camPos += direction * MOVESPEED;
-		}
-		else{
-			camPos += direction * MOVESPEED2;
-		}
-	}
-	if (sDown) {
-		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		if(shiftDown){
-			camPos -= direction * MOVESPEED;
-		}
-		else{
-			camPos -= direction * MOVESPEED2;
-		}
-	}
-	if (dDown) {
-		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
-		if(shiftDown){
-			camPos -= direction * MOVESPEED;
-		}
-		else{
-			camPos -= direction * MOVESPEED2;
-		}
-	}
-	if (qDown) {
-		if(shiftDown){
-			camPos.y -= MOVESPEED;
-		}
-		else{
-			camPos.y -= MOVESPEED2;
-		}
-	}
-	if (eDown) {
-		if(shiftDown){
-			camPos.y += MOVESPEED;
-		}
-		else{
-			camPos.y += MOVESPEED2;
-		}
-	}
 	if(FPV){
 		float tX = camPos.x/(scale);
 		float tZ = camPos.z/(scale);
@@ -198,46 +146,14 @@ void Window::idleCallback() {
 			float yX1 = (1-xP)*t->hm[tX1][tZ1]+xP*t->hm[tX2][tZ1];
 			float yX2 = (1-xP)*t->hm[tX1][tZ2]+xP*t->hm[tX2][tZ2];
 			float yZ = (1-zP)*yX1+zP*yX2;
-
 			if(jumping){
 				jumpTime = jumpTime+0.1f;
-				if(jumpTime < 2.0f){
-					jumpHeight = jumpHeight+0.20f;
-				}
-				else if(jumpTime < 4.0f){
-					jumpHeight = jumpHeight+0.15f;
-				}
-				else if(jumpTime < 6.0f){
-					jumpHeight = jumpHeight+0.10f;
-				}
-				else if(jumpTime < 8.0f){
-					jumpHeight = jumpHeight+0.05f;
-				}
-				else if(jumpTime >= 8.0f){
-					jumping = false;
-					falling = true;
-				}
-			}
-			if(falling){
-				jumpTime = jumpTime+0.1f;
-				if(jumpTime <= 10.0f){
-					jumpHeight = jumpHeight-0.05f;
-				}
-				else if(jumpTime <= 12.0f){
-					jumpHeight = jumpHeight-0.10f;
-				}
-				else if(jumpTime <= 14.0f){
-					jumpHeight = jumpHeight-0.15f;
-				}
-				else{
-					jumpHeight = jumpHeight-0.20f;
-				}
+				jumpHeight = jumpHeight+(0.2f-jumpTime/40.0f);
 				if(jumpHeight <= yZ+4.0f){
-					falling = false;
+					jumping = false;
 				}
 			}
-
-			if(jumping || falling){
+			if(jumping){
 				camPos.y = jumpHeight;
 			}
 			else{
@@ -245,13 +161,101 @@ void Window::idleCallback() {
 			}
 			//fprintf(stderr, "%d, %d, %.3f, %.3f\n", tX1, tX2, tX, yZ);
 			//fprintf(stderr, "%d, %d\n", jumping, falling);
+
+			glm::vec3 nextPos = camPos;
+			if (wDown) {
+				glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+				nextPos += direction * MOVESPEED2;
+			}
+			if (aDown) {
+				glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+				direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+				nextPos += direction * MOVESPEED2;
+			}
+			if (sDown) {
+				glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+				nextPos -= direction * MOVESPEED2;
+			}
+			if (dDown) {
+				glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+				direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+				nextPos -= direction * MOVESPEED2;
+			}
+			tX = nextPos.x/(scale);
+			tZ = nextPos.z/(scale);
+			tX1 = (int)tX;
+			tX2 = tX1+1;
+			tZ1 = (int)tZ;
+			tZ2 = tZ1+1;
+			if(tX1 >= 0 && tX2 < EL && tZ1 >= 0 && tZ2 < EL &&
+				!(t->flat[tX1][tZ1]) && !(t->flat[tX1][tZ2]) && !(t->flat[tX2][tZ1]) && !(t->flat[tX2][tZ2])){
+				camPos = nextPos;
+			}
 		}
 		else{
 			FPV = false;
 		}
 	}
+	else{
+		if (wDown) {
+			glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+			if(shiftDown){
+				camPos += direction * MOVESPEED;
+			}
+			else{
+				camPos += direction * MOVESPEED2;
+			}
+		}
+		if (aDown) {
+			glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+			direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+			if(shiftDown){
+				camPos += direction * MOVESPEED;
+			}
+			else{
+				camPos += direction * MOVESPEED2;
+			}
+		}
+		if (sDown) {
+			glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+			if(shiftDown){
+				camPos -= direction * MOVESPEED;
+			}
+			else{
+				camPos -= direction * MOVESPEED2;
+			}
+		}
+		if (dDown) {
+			glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
+			direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
+			if(shiftDown){
+				camPos -= direction * MOVESPEED;
+			}
+			else{
+				camPos -= direction * MOVESPEED2;
+			}
+		}
+		if (qDown) {
+			if(shiftDown){
+				camPos.y -= MOVESPEED;
+			}
+			else{
+				camPos.y -= MOVESPEED2;
+			}
+		}
+		if (eDown) {
+			if(shiftDown){
+				camPos.y += MOVESPEED;
+			}
+			else{
+				camPos.y += MOVESPEED2;
+			}
+		}
+	}
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
-	time = time+0.0005f;
+	if(timeOn){
+		time = time+0.0005f;
+	}
 	if(time > 4.0f){
 		time = 0.0f;
 	}
@@ -259,35 +263,36 @@ void Window::idleCallback() {
 }
 
 void Window::displayCallback(GLFWwindow* window) {
-	glm::vec3 timeColor = glm::vec3(0.0f, 0.0f, 0.0f);
-	if(time < 1.0f){ //dawn to noon
-		float ratio = time;
-		ratio = 1-ratio;
-		timeColor.r = ratio*0.6f+(1-ratio)*1.0f;
-		timeColor.g = ratio*0.6f+(1-ratio)*1.0f;
-		timeColor.b = ratio*0.5f+(1-ratio)*1.0f;
-	}
-	else if(time < 2.0f){ //noon to dusk
-		float ratio = time-1.0f;
-		ratio = 1-ratio;
+	if(timeOn){
+		if(time < 1.0f){ //dawn to noon
+			float ratio = time;
+			ratio = 1-ratio;
+			timeColor.r = ratio*0.6f+(1-ratio)*1.2f;
+			timeColor.g = ratio*0.6f+(1-ratio)*1.2f;
+			timeColor.b = ratio*0.5f+(1-ratio)*1.2f;
+		}
+		else if(time < 2.0f){ //noon to dusk
+			float ratio = time-1.0f;
+			ratio = 1-ratio;
 
-		timeColor.r = ratio*1.0f+(1-ratio)*0.6f;
-		timeColor.g = ratio*1.0f+(1-ratio)*0.5f;
-		timeColor.b = ratio*1.0f+(1-ratio)*0.6f;
-	}
-	else if(time < 3.0f){ //dusk to midn
-		float ratio = time-2.0f;
-		ratio = 1-ratio;
-		timeColor.r = ratio*0.6f+(1-ratio)*0.2f;
-		timeColor.g = ratio*0.5f+(1-ratio)*0.2f;
-		timeColor.b = ratio*0.6f+(1-ratio)*0.3f;
-	}
-	else if(time < 4.0f){ //midn to dawn
-		float ratio = time-3.0f;
-		ratio = 1-ratio;
-		timeColor.r = ratio*0.2f+(1-ratio)*0.6f;
-		timeColor.g = ratio*0.2f+(1-ratio)*0.6f;
-		timeColor.b = ratio*0.3f+(1-ratio)*0.5f;
+			timeColor.r = ratio*1.2f+(1-ratio)*0.6f;
+			timeColor.g = ratio*1.2f+(1-ratio)*0.5f;
+			timeColor.b = ratio*1.2f+(1-ratio)*0.6f;
+		}
+		else if(time < 3.0f){ //dusk to midn
+			float ratio = time-2.0f;
+			ratio = 1-ratio;
+			timeColor.r = ratio*0.6f+(1-ratio)*0.1f;
+			timeColor.g = ratio*0.5f+(1-ratio)*0.1f;
+			timeColor.b = ratio*0.6f+(1-ratio)*0.2f;
+		}
+		else if(time < 4.0f){ //midn to dawn
+			float ratio = time-3.0f;
+			ratio = 1-ratio;
+			timeColor.r = ratio*0.1f+(1-ratio)*0.6f;
+			timeColor.g = ratio*0.1f+(1-ratio)*0.6f;
+			timeColor.b = ratio*0.2f+(1-ratio)*0.5f;
+		}
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -358,16 +363,20 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		}
 	}
 	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
-		if(FPV && !jumping && !falling){
+		if(FPV && !jumping){
 			jumping = true;
 			jumpTime = 0.0f;
 			jumpHeight = camPos.y;
 		}
 	}
+	else if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+		timeOn = !timeOn;
+		timeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	}
  }
 
 void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-	if (button == GLFW_MOUSE_BUTTON_LEFT) { // rotation
+	if (button == GLFW_MOUSE_BUTTON_LEFT) { //rotation
 		if (action == GLFW_PRESS) {
 			mouseLeftDown = true;
 		} else if (action == GLFW_RELEASE) {

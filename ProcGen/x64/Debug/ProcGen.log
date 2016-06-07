@@ -1,7 +1,7 @@
 ﻿  Window.cpp
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(396): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(397): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(405): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(406): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(402): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(403): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(411): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\user\documents\assignments\cse 167\procgen\procgen\window.cpp(412): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.exe
   ProcGen.vcxproj -> C:\Users\User\Documents\Assignments\CSE 167\ProcGen\x64\Debug\ProcGen.pdb (Partial PDB)

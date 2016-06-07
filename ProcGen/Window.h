@@ -14,6 +14,8 @@
 class Window {
 public:
 	static float time;
+	static glm::vec3 timeColor;
+	static bool timeOn;
 	static bool jumping;
 	static bool falling;
 	static float jumpTime;
