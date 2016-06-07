@@ -13,6 +13,7 @@
 
 class Window {
 public:
+	static float time;
 	static int width;
 	static int height;
 	static glm::mat4 P;

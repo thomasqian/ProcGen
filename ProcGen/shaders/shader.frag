@@ -65,5 +65,5 @@ void main() {
 
 		color = sandC+grassC+snowC;
 	}
-	//color = vec4(point*0.01, 1);
+	color = vec4(color.r*view.r, color.g*view.g, color.b*view.b, 1);
 }

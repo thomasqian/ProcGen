@@ -73,14 +73,5 @@ void main() {
 			color = texture2D(shingles, tex);
 		}
 	}
-	
-    /*vec3 viewDir = normalize(view - fragPos);
-	vec3 lightDir = normalize(point - fragPos);
-	float diff = max(dot(fragNormal, lightDir), 0.0);
-	vec3 reflectDir = reflect(-lightDir, fragNormal);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1000); //shininess is 0.1
-	float distance = length(point - fragPos);
-	float attenuation = 1.0 / (0.03 * (distance * distance)); //attenuation is 0.03
-
-	color = vec4(color*(0.1+3*spec+3*diff));*/
+	color = vec4(color.r*view.r, color.g*view.g, color.b*view.b, 1);
 }

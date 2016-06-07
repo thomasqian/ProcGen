@@ -16,7 +16,7 @@ public:
 	Skybox();
 	~Skybox();
 
-	void draw(GLuint, GLuint, glm::mat4, glm::mat4);
+	void draw(GLuint, GLuint, glm::mat4, glm::mat4, glm::vec3);
 
 private:
 	GLuint VAO, VBO;

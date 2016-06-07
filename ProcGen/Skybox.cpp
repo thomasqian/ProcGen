@@ -104,11 +104,12 @@ GLuint Skybox::load(std::vector<const GLchar*> faces) {
 	return textureID;
 }
 
-void Skybox::draw(GLuint shaderProgram, GLuint skyboxShader, glm::mat4 V, glm::mat4 P) {
+void Skybox::draw(GLuint shaderProgram, GLuint skyboxShader, glm::mat4 V, glm::mat4 P, glm::vec3 view) {
 	glDepthFunc(GL_LEQUAL);  // Change depth function so depth test passes when values are equal to depth buffer's content
 	glm::mat4 skyboxView = glm::mat4(glm::mat3(V));	// Remove any translation component of the view matrix
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(skyboxView));
 	glUniformMatrix4fv(glGetUniformLocation(skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(P));
+	glUniform3f(glGetUniformLocation(skyboxShader, "view2"), view.x, view.y, view.z);
 	// skybox cube
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);

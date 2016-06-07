@@ -29,6 +29,8 @@ bool Window::mouseMidDown;
 bool wDown, aDown, sDown, dDown, qDown, eDown, shiftDown;
 bool FPV;
 
+float Window::time;
+
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 glm::mat4 I(1.0f);
@@ -47,6 +49,7 @@ void Window::initialize() {
 	t = new Terrain();
 
 	FPV = false;
+	time = 0.0f;
 
 	grass = new Texture("textures/grass.ppm");
 	sand = new Texture("textures/sand.ppm");
@@ -191,21 +194,57 @@ void Window::idleCallback() {
 			float yX2 = (1-xP)*t->hm[tX1][tZ2]+xP*t->hm[tX2][tZ2];
 			float yZ = (1-zP)*yX1+zP*yX2;
 			camPos.y = yZ+4.0f;
-			fprintf(stderr, "%d, %d, %.3f, %.3f\n", tX1, tX2, tX, yZ);
+			//fprintf(stderr, "%d, %d, %.3f, %.3f\n", tX1, tX2, tX, yZ);
 		}
 		else{
 			FPV = false;
 		}
 	}
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
+	time = time+0.0005f;
+	if(time > 4.0f){
+		time = 0.0f;
+	}
+	//fprintf(stderr, "%.3f\n", time);
 }
 
 void Window::displayCallback(GLFWwindow* window) {
+	glm::vec3 timeColor = glm::vec3(0.0f, 0.0f, 0.0f);
+	if(time < 1.0f){ //dawn to noon
+		float ratio = time;
+		ratio = 1-ratio;
+		timeColor.r = ratio*0.6f+(1-ratio)*1.0f;
+		timeColor.g = ratio*0.6f+(1-ratio)*1.0f;
+		timeColor.b = ratio*0.5f+(1-ratio)*1.0f;
+	}
+	else if(time < 2.0f){ //noon to dusk
+		float ratio = time-1.0f;
+		ratio = 1-ratio;
+
+		timeColor.r = ratio*1.0f+(1-ratio)*0.6f;
+		timeColor.g = ratio*1.0f+(1-ratio)*0.5f;
+		timeColor.b = ratio*1.0f+(1-ratio)*0.6f;
+	}
+	else if(time < 3.0f){ //dusk to midn
+		float ratio = time-2.0f;
+		ratio = 1-ratio;
+		timeColor.r = ratio*0.6f+(1-ratio)*0.2f;
+		timeColor.g = ratio*0.5f+(1-ratio)*0.2f;
+		timeColor.b = ratio*0.6f+(1-ratio)*0.3f;
+	}
+	else if(time < 4.0f){ //midn to dawn
+		float ratio = time-3.0f;
+		ratio = 1-ratio;
+		timeColor.r = ratio*0.2f+(1-ratio)*0.6f;
+		timeColor.g = ratio*0.2f+(1-ratio)*0.6f;
+		timeColor.b = ratio*0.3f+(1-ratio)*0.5f;
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glCullFace(GL_BACK);
 	glUseProgram(skyboxShader);
-	skybox->draw(shaderProgram, skyboxShader, V, P);
+	skybox->draw(shaderProgram, skyboxShader, V, P, timeColor);
 
 	glCullFace(GL_BACK);
 	glUseProgram(shaderProgram);
@@ -222,9 +261,8 @@ void Window::displayCallback(GLFWwindow* window) {
 
 	glActiveTexture(GL_TEXTURE0 + 3);
 	glBindTexture(GL_TEXTURE_2D, snow->textureID);
-
-	float pointD = 10.0f;
-	t->draw(shaderProgram, buildingShader, glm::vec3(camPos.x+camLook.x*pointD, camPos.y+camLook.y*pointD, camPos.z+camLook.z*pointD), camPos);
+	
+	t->draw(shaderProgram, buildingShader, timeColor, timeColor);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
