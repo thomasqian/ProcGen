@@ -14,6 +14,10 @@
 class Window {
 public:
 	static float time;
+	static bool jumping;
+	static bool falling;
+	static float jumpTime;
+	static float jumpHeight;
 	static int width;
 	static int height;
 	static glm::mat4 P;

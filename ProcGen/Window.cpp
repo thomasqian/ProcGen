@@ -31,6 +31,11 @@ bool FPV;
 
 float Window::time;
 
+float Window::jumpTime;
+float Window::jumpHeight;
+bool Window::jumping;
+bool Window::falling;
+
 glm::mat4 Window::P;
 glm::mat4 Window::V;
 glm::mat4 I(1.0f);
@@ -193,8 +198,53 @@ void Window::idleCallback() {
 			float yX1 = (1-xP)*t->hm[tX1][tZ1]+xP*t->hm[tX2][tZ1];
 			float yX2 = (1-xP)*t->hm[tX1][tZ2]+xP*t->hm[tX2][tZ2];
 			float yZ = (1-zP)*yX1+zP*yX2;
-			camPos.y = yZ+4.0f;
+
+			if(jumping){
+				jumpTime = jumpTime+0.1f;
+				if(jumpTime < 2.0f){
+					jumpHeight = jumpHeight+0.20f;
+				}
+				else if(jumpTime < 4.0f){
+					jumpHeight = jumpHeight+0.15f;
+				}
+				else if(jumpTime < 6.0f){
+					jumpHeight = jumpHeight+0.10f;
+				}
+				else if(jumpTime < 8.0f){
+					jumpHeight = jumpHeight+0.05f;
+				}
+				else if(jumpTime >= 8.0f){
+					jumping = false;
+					falling = true;
+				}
+			}
+			if(falling){
+				jumpTime = jumpTime+0.1f;
+				if(jumpTime <= 10.0f){
+					jumpHeight = jumpHeight-0.05f;
+				}
+				else if(jumpTime <= 12.0f){
+					jumpHeight = jumpHeight-0.10f;
+				}
+				else if(jumpTime <= 14.0f){
+					jumpHeight = jumpHeight-0.15f;
+				}
+				else{
+					jumpHeight = jumpHeight-0.20f;
+				}
+				if(jumpHeight <= yZ+4.0f){
+					falling = false;
+				}
+			}
+
+			if(jumping || falling){
+				camPos.y = jumpHeight;
+			}
+			else{
+				camPos.y = yZ+4.0f;
+			}
 			//fprintf(stderr, "%d, %d, %.3f, %.3f\n", tX1, tX2, tX, yZ);
+			//fprintf(stderr, "%d, %d\n", jumping, falling);
 		}
 		else{
 			FPV = false;
@@ -288,6 +338,9 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		delete(t);
 		t = new Terrain();
+		FPV = false;
+		jumping = false;
+		falling = false;
 	}
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
 		t->toggle();
@@ -304,7 +357,14 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	}
 	else if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		if(mouseMidDown){
-			FPV = true;
+			FPV = !FPV;
+		}
+	}
+	else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		if(FPV && !jumping && !falling){
+			jumping = true;
+			jumpTime = 0.0f;
+			jumpHeight = camPos.y;
 		}
 	}
  }
