@@ -484,7 +484,7 @@ void Building::freeTextures() {
 	delete(strawroof);
 }
 
-void Building::draw(GLuint shader, float min, float max) {
+void Building::draw(GLuint shader, float min, float max, glm::vec3 point, glm::vec3 view) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUseProgram(shader);
@@ -495,6 +495,9 @@ void Building::draw(GLuint shader, float min, float max) {
 	glUniform1f(glGetUniformLocation(shader, "min"), min);
 	glUniform1f(glGetUniformLocation(shader, "max"), max);
 	glUniform1f(glGetUniformLocation(shader, "ypos"), y);
+
+	glUniform3f(glGetUniformLocation(shader, "point"), point.x, point.y, point.z);
+	glUniform3f(glGetUniformLocation(shader, "view"), view.x, view.y, view.z);
 
 	glUniform1i(glGetUniformLocation(shader, "wood"), 0);
 	glUniform1i(glGetUniformLocation(shader, "shingles"), 1);

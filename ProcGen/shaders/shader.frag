@@ -12,6 +12,9 @@ uniform int style;
 uniform float min;
 uniform float max;
 
+uniform vec3 point;
+uniform vec3 view;
+
 void main() {
 	float alt = (height-min)/(max-min); //apprx 0-1
 	if(style == 2){
@@ -62,4 +65,5 @@ void main() {
 
 		color = sandC+grassC+snowC;
 	}
+	//color = vec4(point*0.01, 1);
 }

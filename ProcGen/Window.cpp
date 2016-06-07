@@ -4,6 +4,7 @@ const char* window_title = "Procedural Generation";
 
 static const float ROTSCALE = 0.003f;
 static const float MOVESPEED = 0.7f;
+static const float MOVESPEED2 = 0.2f;
 
 GLuint shaderProgram;
 GLuint skyboxShader;
@@ -11,7 +12,7 @@ GLuint buildingShader;
 Skybox* skybox;
 
 // Default camera parameters
-glm::vec3 camPos(0.0f, 200.0f, 00.0f);		
+glm::vec3 camPos(0.0f, 200.0f, 0.0f);		
 glm::vec3 camLook(1.0f, 0.0f, 1.0f);	
 glm::vec3 camUp(0.0f, 1.0f, 0.0f);			
 
@@ -25,7 +26,8 @@ double Window::prevMouseY;
 
 bool Window::mouseLeftDown;
 bool Window::mouseMidDown;
-bool wDown, aDown, sDown, dDown, qDown, eDown;
+bool wDown, aDown, sDown, dDown, qDown, eDown, shiftDown;
+bool FPV;
 
 glm::mat4 Window::P;
 glm::mat4 Window::V;
@@ -44,12 +46,14 @@ void Window::initialize() {
 	skybox = new Skybox();
 	t = new Terrain();
 
+	FPV = false;
+
 	grass = new Texture("textures/grass.ppm");
 	sand = new Texture("textures/sand.ppm");
 	snow = new Texture("textures/snow.ppm");
 	logs = new Texture("textures/wood.ppm");
 	shingles = new Texture("textures/shingles.ppm");
-
+	
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	skyboxShader = LoadShaders("shaders/skybox.vert", "shaders/skybox.frag");
 	buildingShader = LoadShaders("shaders/buildings.vert", "shaders/buildings.frag");
@@ -121,27 +125,77 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height) {
 void Window::idleCallback() {
 	if (wDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		camPos += direction * MOVESPEED;
+		if(shiftDown){
+			camPos += direction * MOVESPEED;
+		}
+		else{
+			camPos += direction * MOVESPEED2;
+		}
 	}
 	if (aDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
 		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
-		camPos += direction * MOVESPEED;
+		if(shiftDown){
+			camPos += direction * MOVESPEED;
+		}
+		else{
+			camPos += direction * MOVESPEED2;
+		}
 	}
 	if (sDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
-		camPos -= direction * MOVESPEED;
+		if(shiftDown){
+			camPos -= direction * MOVESPEED;
+		}
+		else{
+			camPos -= direction * MOVESPEED2;
+		}
 	}
 	if (dDown) {
 		glm::vec3 direction(glm::normalize(glm::vec3(camLook.x, 0, camLook.z)));
 		direction = glm::vec3(rotateY90 * glm::vec4(direction, 0.0f));
-		camPos -= direction * MOVESPEED;
+		if(shiftDown){
+			camPos -= direction * MOVESPEED;
+		}
+		else{
+			camPos -= direction * MOVESPEED2;
+		}
 	}
 	if (qDown) {
-		camPos.y -= MOVESPEED;
+		if(shiftDown){
+			camPos.y -= MOVESPEED;
+		}
+		else{
+			camPos.y -= MOVESPEED2;
+		}
 	}
 	if (eDown) {
-		camPos.y += MOVESPEED;
+		if(shiftDown){
+			camPos.y += MOVESPEED;
+		}
+		else{
+			camPos.y += MOVESPEED2;
+		}
+	}
+	if(FPV){
+		float tX = camPos.x/(scale);
+		float tZ = camPos.z/(scale);
+		int tX1 = (int)tX;
+		int tX2 = tX1+1;
+		int tZ1 = (int)tZ;
+		int tZ2 = tZ1+1;
+		if(tX1 >= 0 && tX2 < EL && tZ1 >= 0 && tZ2 < EL){
+			float xP = tX-tX1;
+			float zP = tZ-tZ1;
+			float yX1 = (1-xP)*t->hm[tX1][tZ1]+xP*t->hm[tX2][tZ1];
+			float yX2 = (1-xP)*t->hm[tX1][tZ2]+xP*t->hm[tX2][tZ2];
+			float yZ = (1-zP)*yX1+zP*yX2;
+			camPos.y = yZ+4.0f;
+			fprintf(stderr, "%d, %d, %.3f, %.3f\n", tX1, tX2, tX, yZ);
+		}
+		else{
+			FPV = false;
+		}
 	}
 	V = glm::lookAt(camPos, camPos + camLook, camUp);
 }
@@ -169,7 +223,8 @@ void Window::displayCallback(GLFWwindow* window) {
 	glActiveTexture(GL_TEXTURE0 + 3);
 	glBindTexture(GL_TEXTURE_2D, snow->textureID);
 
-	t->draw(shaderProgram, buildingShader, logs, shingles);
+	float pointD = 10.0f;
+	t->draw(shaderProgram, buildingShader, glm::vec3(camPos.x+camLook.x*pointD, camPos.y+camLook.y*pointD, camPos.z+camLook.z*pointD), camPos);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -190,6 +245,8 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		qDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_E) {
 		eDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
+	} else if (key == GLFW_KEY_LEFT_SHIFT) {
+		shiftDown = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	} else if (key == GLFW_KEY_R && action == GLFW_PRESS) {
 		delete(t);
 		t = new Terrain();
@@ -204,6 +261,12 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		}
 		else{
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			FPV = false;
+		}
+	}
+	else if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+		if(mouseMidDown){
+			FPV = true;
 		}
 	}
  }
@@ -223,6 +286,7 @@ void Window::mouseButtonCallback(GLFWwindow* window, int button, int action, int
 		}
 		else{
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			FPV = false;
 		}
 	}
 }

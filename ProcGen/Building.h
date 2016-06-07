@@ -18,7 +18,7 @@ public:
 
 	static void initTextures();
 	static void freeTextures();
-	void draw(GLuint, float, float);
+	void draw(GLuint, float, float, glm::vec3, glm::vec3);
 
 private:
 	glm::mat4 toWorld;

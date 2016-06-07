@@ -227,10 +227,10 @@ void Terrain::generate() {
 		offset = offset/2;
 		if(offset<1.0f){offset = 1.0f;}
 		if (distance == 0) {
-			fprintf(stderr, "done\n");
 			break;
 		}
 	}
+	fprintf(stderr, "done\n");
 }
 
 void Terrain::identify() {
@@ -263,7 +263,7 @@ bool Terrain::inBounds(int x, int z) {
 	return (x >= 0 && x < EL && z >= 0 && z < EL);
 }
 
-void Terrain::draw(GLuint shader, GLuint buildingShader, Texture* logs, Texture* shingles) {
+void Terrain::draw(GLuint shader, GLuint buildingShader, glm::vec3 point, glm::vec3 view) {
 	glm::mat4 MVP = Window::P * Window::V * toWorld;
 
 	glUniformMatrix4fv(glGetUniformLocation(shader, "MVP"), 1, GL_FALSE, &MVP[0][0]);
@@ -272,18 +272,19 @@ void Terrain::draw(GLuint shader, GLuint buildingShader, Texture* logs, Texture*
 	glUniform1f(glGetUniformLocation(shader, "min"), min);
 	glUniform1f(glGetUniformLocation(shader, "max"), max);
 
+	glUniform3f(glGetUniformLocation(shader, "point"), point.x, point.y, point.z);
+	glUniform3f(glGetUniformLocation(shader, "view"), view.x, view.y, view.z);
+
 	glUniform1f(glGetUniformLocation(shader, "length"), (float)((float)EL * (float)scale));
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
-	//glDisable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	for (int i = 0; i < buildings.size(); i++) {
-		buildings[i]->draw(buildingShader, min, max);
+		buildings[i]->draw(buildingShader, min, max, point, view);
 	}
-	//glEnable(GL_CULL_FACE);
 }
 
 void Terrain::generateDiamond(int x, int z, int d, float o) {

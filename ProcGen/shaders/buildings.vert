@@ -9,11 +9,13 @@ uniform mat4 modelUnscaled;
 
 out float height;
 out vec3 fragNormal;
+out vec3 fragPosU;
 out vec3 fragPos;
 
 void main() {
     gl_Position = MVP * vec4(position, 1.0);
 	fragNormal = mat3(transpose(inverse(model))) * normal;
-	fragPos = mat3(transpose(inverse(modelUnscaled)))*position;
+	fragPosU = mat3(transpose(inverse(modelUnscaled)))*position;
+	fragPos = mat3(transpose(inverse(model)))*position;
 	height = position.y;
 }

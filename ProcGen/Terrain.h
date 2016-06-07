@@ -23,7 +23,7 @@ const static float initialOffset = 150.0f;
 const static float flatRange = 0.5f;
 
 class Terrain {
-private:
+public:
 	float hm[EL][EL];
 	bool set[EL][EL];
 	bool flat[EL][EL];
@@ -38,7 +38,6 @@ private:
 
 	std::vector<Building*> buildings;
 
-public:
 	Terrain();
 	~Terrain();
 
@@ -46,7 +45,7 @@ public:
 	void identify();
 	bool inBounds(int, int);
 
-	void draw(GLuint, GLuint, Texture*, Texture*);
+	void draw(GLuint, GLuint, glm::vec3, glm::vec3);
 
 	void generateDiamond(int, int, int, float);
 	void generateSquare(int, int, int, float);
